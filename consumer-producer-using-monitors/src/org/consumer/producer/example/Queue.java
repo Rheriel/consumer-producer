@@ -112,5 +112,20 @@ public class Queue {
 		
 	}
 	
+	/**
+	 * Answers the number of elements in this Queue.
+	 * 
+	 * @return the number of elements in this Queue.
+	 */
+	public int size() {
+		
+		synchronized (queueList) {
+		
+			return queueList.size();
+			
+		}
+		
+	}
+	
 	
 }
