@@ -19,10 +19,32 @@ public class SerialExecutor implements Executor {
 	private final List<Runnable> queue = new ArrayList<Runnable>();
 	
 	/**
-	 * The constructor.
+	 * The constructor. Executes only one Thread to consume the Runnable's.
 	 */
 	public SerialExecutor() {
 		startConsumerThread();
+	}
+	
+	/**
+	 * The constructor. Specifies the number of threads consuming the 
+	 * Runnable's.
+	 * 
+	 * @param poolSize Thread pool size.
+	 * @throws IllegalArgumentException If the given pool size is 0 or less.
+	 */
+	public SerialExecutor(final int poolSize) throws IllegalArgumentException {
+		
+		if (poolSize <= 0) {
+			throw new IllegalArgumentException("Pool size must be 1 or above.");
+		}
+		
+		for (int poolThreadIndex = 0; poolThreadIndex < poolSize; 
+				poolThreadIndex++) {
+			
+			startConsumerThread();
+			
+		}
+		
 	}
 	
 	/*
@@ -67,15 +89,7 @@ public class SerialExecutor implements Executor {
 					
 					final Runnable nextRunnable = consume();
 					
-					final Thread executeRunnable = new Thread(nextRunnable);
-					
-					executeRunnable.start();
-					
-					try {
-						executeRunnable.join();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+					nextRunnable.run();
 					
 				}
 				
